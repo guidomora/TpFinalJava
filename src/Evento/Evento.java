@@ -1,5 +1,9 @@
 package Evento;
 
+import java.util.ArrayList;
+
+import Asistente.Asistente;
+import Asistentes.Asistentes;
 import Recursos.Recursos;
 
 public class Evento {
@@ -9,18 +13,19 @@ public class Evento {
     private int capacidad;
     private String categoria;
     private Recursos recursos;
+    private Asistentes asistentes;  // Ahora tienes un objeto Asistentes
 
-    public Evento(String descripcion, String fecha, String ubicacion, int capacidad, Recursos recursos ) {
+    public Evento(String descripcion, String fecha, String ubicacion, int capacidad, Recursos recursos) {
         this.descripcion = descripcion;
         this.fecha = fecha;
         this.ubicacion = ubicacion;
         this.capacidad = capacidad;
         this.categoria = asignarCategoria(capacidad);
         this.recursos = recursos;
-
+        this.asistentes = new Asistentes(new ArrayList<>());  // Inicializa la lista de asistentes
     }
 
-    private String asignarCategoria(int capacidad) {
+    public String asignarCategoria(int capacidad) {
         if (capacidad < 400) {
             return "Pequeño";
         } else if (capacidad <= 1200) {
@@ -30,13 +35,23 @@ public class Evento {
         }
     }
 
+    // Este método ahora solo devuelve la cantidad de asistentes
     public String getEvento() {
-        return "Descripción: " + descripcion + " " + 
-               "Fecha: " + fecha + " " + 
-               "Ubicación: " + ubicacion + " " + 
-               "Capacidad: " + capacidad + " " + 
-               "Categoría: " + categoria
-               + "Recursos: " + recursos.getRecursos();
+        return "Descripción: " + descripcion + " " +
+               "Fecha: " + fecha + " " +
+               "Ubicación: " + ubicacion + " " +
+               "Capacidad: " + capacidad + " " +
+               "Categoría: " + categoria + " " +
+               "Recursos: " + recursos.getRecursos() + " " +
+               "Cantidad de asistentes: " + " " +asistentes.getCantidadAsistentes();  // Muestra solo la cantidad de asistentes
+    }
+
+    public void addAsistente(Asistente asistente) {
+        this.asistentes.addAsistente(asistente);  // Agregar un asistente al evento
+    }
+
+    public Asistentes getAsistentes() {
+        return asistentes;  // Para acceder a los asistentes del evento
     }
 
     public String getDescripcion() {
@@ -69,6 +84,22 @@ public class Evento {
 
     @Override
     public String toString() {
-        return descripcion;  // Usamos solo la descripción para mostrarla en la lista
+        return descripcion; // Usamos solo la descripción para mostrarla en la lista
+    }
+
+    public void setDescripcion(String descripcion) {
+        this.descripcion = descripcion;
+    }
+
+    public void setFecha(String fecha) {
+        this.fecha = fecha;
+    }
+
+    public void setUbicacion(String ubicacion) {
+        this.ubicacion = ubicacion;
+    }
+
+    public void setCapacidad(int capacidad) {
+        this.capacidad = capacidad;
     }
 }
