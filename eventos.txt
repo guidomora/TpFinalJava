@@ -1,2 +1,4 @@
-qweqwe,11/11/22,wqe,222,[],Pequeño,false,false,true
-eee,11/11/11,333fe,333,[],Pequeño,false,false,true
+gym,17/11/24,Costanera,300,[],Pequeño,false,false,false
+empresas,24/11/24,Costanera,2300,[],Grande,false,false,false
+e-sports,28/11/24,Costanera,1100,[],Mediano,false,false,false
+comicon,28/05/24,Costanera,2100,[],Grande,false,true,true

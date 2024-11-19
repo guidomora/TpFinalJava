@@ -8,22 +8,25 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import Asistente.Asistente;
 import Evento.Evento;
+import Recursos.Recursos;
 
 public class Eventos {
     private List<Evento> eventos;
 
     public Eventos() {
         this.eventos = new ArrayList<>();
-        leerEventosDesdeArchivo("eventos.txt"); // Cargar los eventos desde el archivo
     }
 
     public void addEvento(Evento evento) {
-        eventos.add(evento);
-        guardarEventosEnArchivo("eventos.txt");
+        if (!eventos.contains(evento)) {
+            eventos.add(evento);
+        } 
     }
+    
 
     public void getEventos() {
         for (Evento evento : eventos) {
@@ -37,19 +40,7 @@ public class Eventos {
 
     public void removeEvento(Evento evento) {
         eventos.remove(evento);
-        guardarEventosEnArchivo("eventos.txt");
-    }
-
-    
-
-    public List<Evento> getEventosEnFecha(java.util.Date fecha) {
-        List<Evento> eventosEnFecha = new ArrayList<>();
-        for (Evento evento : eventos) {
-            if (evento.getFecha().equals(fecha.toString())) { // Compara la fecha
-                eventosEnFecha.add(evento);
-            }
-        }
-        return eventosEnFecha;
+        cargarEventosDesdeArchivo("eventos.txt");
     }
 
     public List<Evento> getEventosEnFecha(LocalDate fecha) {
@@ -62,32 +53,38 @@ public class Eventos {
         return eventosDelDia;
     }
 
-    public void leerEventosDesdeArchivo(String nombreArchivo) {
+    
+
+    public void cargarEventosDesdeArchivo(String nombreArchivo) {
         try (BufferedReader reader = new BufferedReader(new FileReader(nombreArchivo))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                Evento evento = Evento.fromString(line); // Usamos el método fromString para crear el evento
-                if (evento != null && !eventos.contains(evento)) {  // Evitar duplicados
-                    addEvento(evento); // Agregar el evento a la lista
-                }
+            String linea;
+            while ((linea = reader.readLine()) != null) {
+                String[] datos = linea.split(",");
+                String descripcion = datos[0];
+                String fecha = datos[1];
+                String ubicacion = datos[2];
+                int capacidad = Integer.parseInt(datos[3]);
+                Recursos recursos = new Recursos(
+                        Boolean.parseBoolean(datos[5]),
+                        Boolean.parseBoolean(datos[6]),
+                        Boolean.parseBoolean(datos[7]));
+                Evento evento = new Evento(descripcion, fecha, ubicacion, capacidad, recursos);
+                this.addEvento(evento);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-    
 
     public void guardarEventosEnArchivo(String nombreArchivo) {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(nombreArchivo, true))) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(nombreArchivo, false))) {
             for (Evento evento : eventos) {
-                writer.write(evento.toString());  // Escribir evento
+                writer.write(evento.toString());
                 writer.newLine();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error al guardar los eventos: " + e.getMessage());
         }
     }
-    
-
 
 }

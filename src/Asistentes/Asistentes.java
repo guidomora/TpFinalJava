@@ -1,5 +1,10 @@
 package Asistentes;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.List;
 
 import Asistente.Asistente;
@@ -42,5 +47,24 @@ public class Asistentes {
 
     public int getCantidadAsistentes() {
         return asistentes.size();
+    }
+
+    // Método para guardar los asistentes en un archivo
+    public static void guardarAsistentes(List<Asistente> asistentes, String nombreArchivo) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(nombreArchivo))) {
+            oos.writeObject(asistentes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Método para cargar los asistentes desde un archivo
+    public static List<Asistente> cargarAsistentes(String nombreArchivo) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(nombreArchivo))) {
+            return (List<Asistente>) ois.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
