@@ -1,109 +1,101 @@
 package Ventanas;
+
 import Evento.Evento;
 import Eventos.Eventos;
+
+import com.toedter.calendar.JCalendar;
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 public class VentanaDeCalendario extends JFrame {
-    private Eventos eventos;  // Para almacenar la lista de eventos
+    private Eventos eventos;  // Lista de eventos
+    private JCalendar calendario; // Componente de calendario
 
-    // Constructor que recibe el objeto eventos
     public VentanaDeCalendario(Eventos eventos) {
-        this.eventos = eventos;  // Asignar el objeto eventos
+        this.eventos = eventos;  // Asignar eventos al calendario
 
-        // Mostrar la ventana del calendario
-        SwingUtilities.invokeLater(() -> new CalendarioFrame(eventos).setVisible(true));
-    }
-}
-
-
-class CalendarioFrame extends JFrame {
-    private JPanel calendarioPanel;
-    private LocalDate fechaActual;
-    private Eventos eventos;  // La lista de eventos
-
-    // Constructor que recibe el objeto eventos
-    public CalendarioFrame(Eventos eventos) {
-        this.eventos = eventos;  // Asignar el objeto eventos
-        setTitle("Calendario Personalizado");
-        setSize(350, 350);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setTitle("Calendario de Eventos");
+        setSize(600, 400);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        fechaActual = LocalDate.now();  // Obtener la fecha actual
+        // Crear el componente JCalendar
+        calendario = new JCalendar();
 
-        // Panel principal que contiene el calendario
-        calendarioPanel = new JPanel();
-        calendarioPanel.setLayout(new GridLayout(0, 7));  // 7 columnas para los días de la semana
+        // Colorear los días con eventos
+        marcarDiasConEventos();
 
-        // Crear la cabecera con los días de la semana
-        String[] dias = {"Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"};
-        for (String dia : dias) {
-            calendarioPanel.add(new JLabel(dia, SwingConstants.CENTER));
-        }
+        // Agregar un evento de cambio de fecha
+        calendario.getDayChooser().addPropertyChangeListener("day", e -> {
+            Date fechaSeleccionada = calendario.getDate();
+            mostrarEventos(fechaSeleccionada);
+        });
 
-        // Generar los días del mes
-        generarCalendario();
-
-        // Añadir el panel del calendario al marco
-        add(calendarioPanel, BorderLayout.CENTER);
+        // Layout principal
+        setLayout(new BorderLayout());
+        add(calendario, BorderLayout.CENTER);
     }
 
-    // Método para generar el calendario
-    private void generarCalendario() {
-        // Obtener el primer día del mes y el número total de días en el mes
-        LocalDate primerDiaDelMes = fechaActual.withDayOfMonth(1);
-        int diasEnElMes = fechaActual.lengthOfMonth();
-        int primerDiaDeLaSemana = primerDiaDelMes.getDayOfWeek().getValue();  // 1 = Lunes, 7 = Domingo
+    private void marcarDiasConEventos() {
+        // Obtener el modelo del calendario
+        var dayChooser = calendario.getDayChooser();
 
-        // Vaciar el panel antes de generar el calendario
-        calendarioPanel.removeAll();
-
-        // Reagregar los días de la semana
-        String[] dias = {"Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"};
-        for (String dia : dias) {
-            calendarioPanel.add(new JLabel(dia, SwingConstants.CENTER));
-        }
-
-        // Agregar espacios vacíos antes del primer día del mes
-        for (int i = 0; i < primerDiaDeLaSemana; i++) {
-            calendarioPanel.add(new JLabel(""));
-        }
-
-        // Agregar los días del mes
-        for (int i = 1; i <= diasEnElMes; i++) {
-            LocalDate diaActual = fechaActual.withDayOfMonth(i);
-            JButton botonDia = new JButton(String.valueOf(i));
-
-            // Verificar si el día tiene eventos y agregar una marca
-            List<Evento> eventosDelDia = eventos.getEventosEnFecha(java.sql.Date.valueOf(diaActual));
-            if (!eventosDelDia.isEmpty()) {
-                botonDia.setBackground(Color.YELLOW);  // Cambiar el color de fondo
-                botonDia.setToolTipText("Hay eventos para este día");  // Tooltip opcional
+        // Resetear colores
+        for (Component component : dayChooser.getDayPanel().getComponents()) {
+            if (component instanceof JButton boton) {
+                boton.setBackground(UIManager.getColor("Button.background"));
             }
-
-            botonDia.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // Mostrar los eventos para el día seleccionado
-                    StringBuilder eventosStr = new StringBuilder("Eventos del " + diaActual + ":\n");
-                    for (Evento evento : eventosDelDia) {
-                        eventosStr.append(evento.getDescripcion()).append("\n");
-                    }
-                    JOptionPane.showMessageDialog(null, eventosStr.toString());
-                }
-            });
-
-            calendarioPanel.add(botonDia);
         }
 
-        // Actualizar el layout para que se muestren los componentes
-        calendarioPanel.revalidate();
-        calendarioPanel.repaint();
+        // Marcar días con eventos
+        for (Evento evento : eventos.getListaEventos()) {
+            LocalDate fechaEvento = evento.getFechaComoLocalDate();
+            Date fechaDate = Date.from(fechaEvento.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+            // Comparar la fecha del evento con los días visibles en el calendario
+            for (Component component : dayChooser.getDayPanel().getComponents()) {
+                if (component instanceof JButton boton) {
+                    try {
+                        int dia = Integer.parseInt(boton.getText());
+                        LocalDate fechaBoton = LocalDate.of(
+                                calendario.getYearChooser().getYear(),
+                                calendario.getMonthChooser().getMonth() + 1,
+                                dia
+                        );
+                        if (fechaEvento.equals(fechaBoton)) {
+                            boton.setBackground(Color.YELLOW); // Marcar día con evento
+                        }
+                    } catch (NumberFormatException ignored) {
+                        // Los botones vacíos o no válidos se ignoran
+                    }
+                }
+            }
+        }
+    }
+
+    private void mostrarEventos(Date fechaSeleccionada) {
+        // Convertir la fecha seleccionada a LocalDate
+        LocalDate fecha = fechaSeleccionada.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
+        // Obtener eventos en la fecha seleccionada
+        List<Evento> eventosDelDia = eventos.getEventosEnFecha(fecha);
+
+        // Construir la lista de eventos
+        if (eventosDelDia.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No hay eventos para esta fecha.", "Eventos", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            StringBuilder mensaje = new StringBuilder("Eventos del " + fecha + ":\n");
+            for (Evento evento : eventosDelDia) {
+                mensaje.append("- ").append(evento.getDescripcion()).append("\n");
+            }
+            JOptionPane.showMessageDialog(this, mensaje.toString(), "Eventos", JOptionPane.INFORMATION_MESSAGE);
+        }
     }
 }
-

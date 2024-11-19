@@ -4,12 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 
 import javax.swing.JPanel;
 
 import Asistente.Asistente;
-import Asistentes.Asistentes;
 import Evento.Evento;
 import Eventos.Eventos;
 import Recursos.Recursos;
@@ -53,9 +51,6 @@ public class App {
         Asistente asistente2 = new Asistente("Juan", "Perez", "juan@mail.com", "123456775", 30);
         Asistente asistente3 = new Asistente("Pedro", "Gomez", "pedro@mail", "123456775", 41);
         Asistente asistente4 = new Asistente("Maria", "Gonzalez", "maria@mail.com", "123456775", 19);
-
-        // Creamos una lista de asistentes
-        Asistentes asistentesLista = new Asistentes(List.of(asistente1, asistente2, asistente3, asistente4));
 
         // Creamos los eventos
         Eventos eventos = new Eventos();
@@ -119,5 +114,13 @@ public class App {
             }
         });
 
+        calendario.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                new VentanaDeCalendario(eventos).setVisible(true);
+            }
+        });
+
+        eventos.guardarEventosEnArchivo("eventos.txt");
     }
 }
