@@ -19,19 +19,16 @@ public class VentanaAsistentes extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Panel con lista de eventos
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
         DefaultListModel<String> listModel = new DefaultListModel<>();
         JList<String> listaEventos = new JList<>(listModel);
 
-        // Agregar eventos a la lista
         for (Evento evento : eventos) {
             listModel.addElement(evento.getDescripcion());
         }
 
-        // Botón para gestionar asistentes del evento seleccionado
         JButton botonSeleccionar = new JButton("Gestionar Asistentes");
         botonSeleccionar.addActionListener(new ActionListener() {
             @Override
@@ -40,7 +37,7 @@ public class VentanaAsistentes extends JFrame {
                 if (index != -1) {
                     Evento eventoSeleccionado = eventos.get(index);
                     new VentanaEditarAsistentes(eventoSeleccionado).setVisible(true);
-                    dispose(); // Cerrar esta ventana
+                    dispose(); 
                 } else {
                     JOptionPane.showMessageDialog(null, "Seleccione un evento.");
                 }

@@ -20,16 +20,13 @@ public class VentanaEditarAsistentes extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Panel principal
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
 
-        // Lista de asistentes
         asistentesModel = new DefaultListModel<>();
         JList<String> listaAsistentes = new JList<>(asistentesModel);
         cargarAsistentes();
 
-        // Botón para agregar asistentes
         JButton botonAgregar = new JButton("Agregar Asistente");
         botonAgregar.addActionListener(new ActionListener() {
             @Override
@@ -43,12 +40,10 @@ public class VentanaEditarAsistentes extends JFrame {
                 Asistente nuevoAsistente = new Asistente(nombre, apellido, correo, telefono, edad);
                 evento.getAsistentes().addAsistente(nuevoAsistente);
 
-                // Actualizar lista
                 cargarAsistentes();
             }
         });
 
-        // Botón para eliminar asistentes
         JButton botonEliminar = new JButton("Eliminar Asistente");
         botonEliminar.addActionListener(new ActionListener() {
             @Override
@@ -63,7 +58,6 @@ public class VentanaEditarAsistentes extends JFrame {
             }
         });
 
-        // Agregar componentes al panel
         panel.add(new JScrollPane(listaAsistentes), BorderLayout.CENTER);
 
         JPanel botonesPanel = new JPanel();

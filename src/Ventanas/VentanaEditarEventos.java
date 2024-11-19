@@ -9,8 +9,8 @@ import java.util.List;
 
 public class VentanaEditarEventos extends JFrame {
     
-    private List<Evento> eventos; // Lista de eventos
-    private JComboBox<Evento> cbEventos; // Combo box para seleccionar evento
+    private List<Evento> eventos; 
+    private JComboBox<Evento> cbEventos; 
     private JTextField tfDescripcion;
     private JTextField tfFecha;
     private JTextField tfUbicacion;
@@ -21,16 +21,13 @@ public class VentanaEditarEventos extends JFrame {
 
     // Constructor
     public VentanaEditarEventos(List<Evento> eventos) {
-        this.eventos = eventos; // Recibimos la lista de eventos
+        this.eventos = eventos; 
         setTitle("Editar Evento");
         setSize(400, 300);
-        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);  // Cierra la ventana sin salir de la aplicación
-        setLocationRelativeTo(null);  // Centra la ventana
-        
-        // Layout manager
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);  
+        setLocationRelativeTo(null);  
         setLayout(new GridLayout(7, 2));
 
-        // Etiqueta para seleccionar evento
         add(new JLabel("Seleccionar Evento:"));
         cbEventos = new JComboBox<>(eventos.toArray(new Evento[0]));
         cbEventos.addActionListener(new ActionListener() {
@@ -41,7 +38,6 @@ public class VentanaEditarEventos extends JFrame {
         });
         add(cbEventos);
 
-        // Etiquetas y campos de texto
         add(new JLabel("Descripción:"));
         tfDescripcion = new JTextField();
         add(tfDescripcion);
@@ -63,13 +59,11 @@ public class VentanaEditarEventos extends JFrame {
         cbCategoria = new JComboBox<>(categorias);
         add(cbCategoria);
 
-        // Botones
         btnGuardar = new JButton("Guardar");
         btnCancelar = new JButton("Cancelar");
         add(btnGuardar);
         add(btnCancelar);
 
-        // Manejo de eventos de botones
         btnGuardar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -80,17 +74,15 @@ public class VentanaEditarEventos extends JFrame {
         btnCancelar.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose();  // Cerrar la ventana sin guardar
+                dispose(); 
             }
         });
 
-        // Cargar el primer evento al inicio
         if (!eventos.isEmpty()) {
-            cargarDatosEvento(eventos.get(0));  // Cargar datos del primer evento
+            cargarDatosEvento(eventos.get(0));  
         }
     }
 
-    // Cargar los datos del evento seleccionado en los campos de texto
     private void cargarDatosEvento(Evento evento) {
         tfDescripcion.setText(evento.getDescripcion());
         tfFecha.setText(evento.getFecha());
@@ -99,10 +91,8 @@ public class VentanaEditarEventos extends JFrame {
         cbCategoria.setSelectedItem(evento.getCategoria());
     }
 
-    // Método para guardar los cambios
     private void guardarCambios() {
         try {
-            // Obtener los valores editados
             Evento eventoSeleccionado = (Evento) cbEventos.getSelectedItem();
             String descripcion = tfDescripcion.getText();
             String fecha = tfFecha.getText();
@@ -110,7 +100,6 @@ public class VentanaEditarEventos extends JFrame {
             int capacidad = Integer.parseInt(tfCapacidad.getText());
             String categoria = (String) cbCategoria.getSelectedItem();
 
-            // Actualizar el evento con los nuevos valores
             eventoSeleccionado.setCategoria(categoria);
             eventoSeleccionado.setDescripcion(descripcion);
             eventoSeleccionado.setFecha(fecha);
@@ -119,7 +108,7 @@ public class VentanaEditarEventos extends JFrame {
 
 
             JOptionPane.showMessageDialog(this, "Evento actualizado con éxito");
-            dispose();  // Cerrar la ventana después de guardar
+            dispose();  
         } catch (NumberFormatException ex) {
             JOptionPane.showMessageDialog(this, "Por favor, ingresa una capacidad válida.", "Error", JOptionPane.ERROR_MESSAGE);
         }

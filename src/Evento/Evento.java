@@ -27,7 +27,7 @@ public class Evento {
         this.capacidad = capacidad;
         this.categoria = asignarCategoria(capacidad);
         this.recursos = recursos;
-        this.asistentes = new Asistentes(new ArrayList<>()); // Inicializa la lista de asistentes
+        this.asistentes = new Asistentes(new ArrayList<>()); 
     }
 
     public String asignarCategoria(int capacidad) {
@@ -40,7 +40,6 @@ public class Evento {
         }
     }
 
-    // Este método ahora solo devuelve la cantidad de asistentes
     public String getEvento() {
         return "Descripción: " + descripcion + " " +
                 "Fecha: " + fecha + " " +
@@ -48,23 +47,22 @@ public class Evento {
                 "Capacidad: " + capacidad + " " +
                 "Categoría: " + categoria + " " +
                 "Recursos: " + recursos.getRecursos() + " " +
-                "Cantidad de asistentes: " + " " + asistentes.getCantidadAsistentes(); // Muestra solo la cantidad de
-                                                                                       // asistentes
+                "Cantidad de asistentes: " + " " + asistentes.getCantidadAsistentes(); 
     }
 
     public void addAsistente(Asistente asistente) {
-        if (!this.asistentes.getListaAsistentes().contains(asistente)) { // Evita duplicados
-            this.asistentes.addAsistente(asistente); // Agrega el asistente
+        if (!this.asistentes.getListaAsistentes().contains(asistente)) { 
+            this.asistentes.addAsistente(asistente); 
         }
     }
     
 
     public Asistentes getAsistentes() {
-        return asistentes; // Para acceder a los asistentes del evento
+        return asistentes; 
     }
 
     public List<Asistente> getListaAsistentes() {
-        return this.asistentes.getListaAsistentes(); // Usa el método de la clase Asistentes
+        return this.asistentes.getListaAsistentes(); 
     }
 
     public String getDescripcion() {
@@ -80,7 +78,6 @@ public class Evento {
                     .append(asistente.getCorreo()).append(",")
                     .append(asistente.getEdad()).append(", ");
         }
-        // Remover la última coma y espacio si hay asistentes
         if (asistentesStr.length() > 0) {
             asistentesStr.setLength(asistentesStr.length() - 2);
         }
@@ -154,34 +151,31 @@ public class Evento {
     public static Evento fromString(String line) {
         try {
             String[] data = line.split(",");
-            if (data.length >= 6) { // Asegúrate de tener al menos 6 elementos
+            if (data.length >= 6) { 
                 String descripcion = data[0];
                 String fecha = data[1];
                 String ubicacion = data[2];
                 int capacidad = Integer.parseInt(data[3]);
 
-                // Parsear la lista de asistentes (si existe)
                 String asistentesStr = data[4];
 
                 String categoria = data[5];
 
-                // Crear recursos desde el final de la línea
                 String[] recursosData = Arrays.copyOfRange(data, 6, data.length);
                 Recursos recursos = Recursos.fromString(String.join(",", recursosData));
 
                 Evento evento = new Evento(descripcion, fecha, ubicacion, capacidad, recursos);
 
-                // Si hay asistentes, agregarlos
                 if (!asistentesStr.equals("[]")) {
                     String[] asistentesDatos = asistentesStr.replaceAll("[\\[\\]]", "").split(", ");
                     for (int i = 0; i < asistentesDatos.length; i += 4) {
-                        if (i + 3 < asistentesDatos.length) { // Verifica que haya suficientes datos para crear un asistente
+                        if (i + 3 < asistentesDatos.length) { 
                             Asistente asistente = new Asistente(
                                     asistentesDatos[i],            
                                     asistentesDatos[i + 1],         
                                     asistentesDatos[i + 2],         
                                     "123456775",                    
-                                    Integer.parseInt(asistentesDatos[i + 3]) // Edad
+                                    Integer.parseInt(asistentesDatos[i + 3]) 
                             );
                             evento.addAsistente(asistente);
                         }

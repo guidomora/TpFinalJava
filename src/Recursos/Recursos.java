@@ -54,12 +54,10 @@ public class Recursos {
         return recursos;
     }
 
-    // Método para convertir los recursos en una cadena de texto
     public String recursosToString() {
         return salones + "," + equipoAudiovisual + "," + catering;
     }
 
-    // Método para reconstruir un objeto Recursos a partir de una cadena
     public static Recursos fromString(String line) {
         String[] data = line.split(",");
         if (data.length == 3) {

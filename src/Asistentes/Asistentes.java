@@ -49,7 +49,6 @@ public class Asistentes {
         return asistentes.size();
     }
 
-    // Método para guardar los asistentes en un archivo
     public static void guardarAsistentes(List<Asistente> asistentes, String nombreArchivo) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(nombreArchivo))) {
             oos.writeObject(asistentes);
@@ -58,7 +57,6 @@ public class Asistentes {
         }
     }
 
-    // Método para cargar los asistentes desde un archivo
     public static List<Asistente> cargarAsistentes(String nombreArchivo) {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(nombreArchivo))) {
             return (List<Asistente>) ois.readObject();

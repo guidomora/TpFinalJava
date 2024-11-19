@@ -107,11 +107,9 @@ public class VentanaCrearEventos extends JFrame {
         gbc.gridwidth = 3;
         add(guardarButton, gbc);
 
-        // Acción del botón para guardar el evento
         guardarButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Obtener los datos del formulario
                 String descripcion = descripcionField.getText();
                 String fecha = fechaField.getText();
                 String ubicacion = ubicacionField.getText();
@@ -120,21 +118,17 @@ public class VentanaCrearEventos extends JFrame {
                 try {
                     capacidad = Integer.parseInt(capacidadField.getText());
 
-                    // Obtener los recursos seleccionados
                     boolean salones = salonesCheckBox.isSelected();
                     boolean equipoAudiovisual = equipoAudiovisualCheckBox.isSelected();
                     boolean catering = cateringCheckBox.isSelected();
                     
-                    // Crear un objeto Recursos
                     Recursos recursos = new Recursos(salones, equipoAudiovisual, catering);
 
-                    // Crear un nuevo evento con los recursos
                     Evento evento = new Evento(descripcion, fecha, ubicacion, capacidad, recursos);
-                    eventos.addEvento(evento);  // Agregar evento a la lista de eventos
+                    eventos.addEvento(evento);  
 
                     JOptionPane.showMessageDialog(null, "Evento guardado correctamente.");
 
-                    // Limpiar campos después de guardar
                     descripcionField.setText("");
                     fechaField.setText("");
                     ubicacionField.setText("");

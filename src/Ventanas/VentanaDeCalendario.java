@@ -13,51 +13,42 @@ import java.util.Date;
 import java.util.List;
 
 public class VentanaDeCalendario extends JFrame {
-    private Eventos eventos;  // Lista de eventos
-    private JCalendar calendario; // Componente de calendario
-
+    private Eventos eventos;  
+    private JCalendar calendario; 
     public VentanaDeCalendario(Eventos eventos) {
-        this.eventos = eventos;  // Asignar eventos al calendario
+        this.eventos = eventos;  
 
         setTitle("Calendario de Eventos");
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Crear el componente JCalendar
         calendario = new JCalendar();
 
-        // Colorear los días con eventos
         marcarDiasConEventos();
 
-        // Agregar un evento de cambio de fecha
         calendario.getDayChooser().addPropertyChangeListener("day", e -> {
             Date fechaSeleccionada = calendario.getDate();
             mostrarEventos(fechaSeleccionada);
         });
 
-        // Layout principal
         setLayout(new BorderLayout());
         add(calendario, BorderLayout.CENTER);
     }
 
     private void marcarDiasConEventos() {
-        // Obtener el modelo del calendario
         var dayChooser = calendario.getDayChooser();
 
-        // Resetear colores
         for (Component component : dayChooser.getDayPanel().getComponents()) {
             if (component instanceof JButton boton) {
                 boton.setBackground(UIManager.getColor("Button.background"));
             }
         }
 
-        // Marcar días con eventos
         for (Evento evento : eventos.getListaEventos()) {
             LocalDate fechaEvento = evento.getFechaComoLocalDate();
             Date fechaDate = Date.from(fechaEvento.atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-            // Comparar la fecha del evento con los días visibles en el calendario
             for (Component component : dayChooser.getDayPanel().getComponents()) {
                 if (component instanceof JButton boton) {
                     try {
@@ -68,10 +59,10 @@ public class VentanaDeCalendario extends JFrame {
                                 dia
                         );
                         if (fechaEvento.equals(fechaBoton)) {
-                            boton.setBackground(Color.YELLOW); // Marcar día con evento
+                            boton.setBackground(Color.YELLOW); 
                         }
                     } catch (NumberFormatException ignored) {
-                        // Los botones vacíos o no válidos se ignoran
+                        
                     }
                 }
             }
@@ -79,15 +70,12 @@ public class VentanaDeCalendario extends JFrame {
     }
 
     private void mostrarEventos(Date fechaSeleccionada) {
-        // Convertir la fecha seleccionada a LocalDate
         LocalDate fecha = fechaSeleccionada.toInstant()
                 .atZone(ZoneId.systemDefault())
                 .toLocalDate();
 
-        // Obtener eventos en la fecha seleccionada
         List<Evento> eventosDelDia = eventos.getEventosEnFecha(fecha);
 
-        // Construir la lista de eventos
         if (eventosDelDia.isEmpty()) {
             JOptionPane.showMessageDialog(this, "No hay eventos para esta fecha.", "Eventos", JOptionPane.INFORMATION_MESSAGE);
         } else {
